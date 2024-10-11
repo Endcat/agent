@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
                                                   "The process id of the process the AGENT will monitor" >>
                                               [&core_config]() { core_config.tracing_selected = "pid"; });
   auto run_time_cmd = (clipp::option("-T") & clipp::value("trace time in seconds", core_config.exit_after)) %
-                      "The time the ENUNOMIA will monitor for";
+                      "The time the AGENT will monitor for";
 
   auto run_required_cmd = clipp::value("run required cmd name", run_tracker_selected);
   auto run_opt_cmd_args = clipp::opt_values("extra args", run_with_extra_args);

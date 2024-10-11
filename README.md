@@ -128,6 +128,7 @@ cmake --build build --config Release
 
 1. 构建并运行Agent Docker镜像：
 ```
+cd quickstart
 sudo docker build -t agent:v0.1 .
 sudo docker run agent:v0.1
 ```
@@ -159,6 +160,23 @@ wget https://dl.grafana.com/enterprise/release/grafana-enterprise_8.5.4_amd64.de
 sudo dpkg -i grafana-enterprise_8.5.4_amd64.deb
 sudo /bin/systemctl start grafana-server
 ```
+#### 非生产环境快速部署quickstart
+正常部署逻辑是在若干待观测容器中运行agent，通过配置文件将所有容器运行信息收集至prometheus。在非生产环境快速测试可行性时，使用如下操作：
+1. 构建并运行Agent Docker镜像
+```
+cd quickstart
+docker build -t agent:v0.1 .
+docker run -it --rm --privileged -p 9090:9090 agent:v0.1 /bin/bash
+```
+2. 运行Agent与prometheus
+将prometheus和Agent在同一个container中运行，这样在默认配置条件下就不需要改动网络配置，直接对本容器进行信息采集和监控。
+```
+mount -t debugfs none /sys/kernel/debug
+./agent server --config test.toml"
+./prometheus-2.53.0.linux-amd64/prometheus --config.file=prometheus.yml --web.listen-address="0.0.0.0:9090"
+```
+在webui中访问localhost:9090查看prometheus dashboard。
+
 ### Prometheus和Grafana运行结果
 
 在 Promtheus 上展示和容器信息关联的 tcp 连接延时
